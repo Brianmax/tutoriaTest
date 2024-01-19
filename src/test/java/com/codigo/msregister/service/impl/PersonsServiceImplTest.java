@@ -1,6 +1,8 @@
 package com.codigo.msregister.service.impl;
 
+import com.codigo.msregister.aggregates.request.RequestPersons;
 import com.codigo.msregister.aggregates.response.ResponseBase;
+import com.codigo.msregister.aggregates.response.ResponseReniec;
 import com.codigo.msregister.config.RedisService;
 import com.codigo.msregister.constants.Constants;
 import com.codigo.msregister.entity.PersonsEntity;
@@ -47,6 +49,32 @@ class PersonsServiceImplTest {
 
     @Test
     void createPersons() {
+        boolean validatePersons = true;
+        ResponseReniec responseReniec = new ResponseReniec("JOSE", "PEREZ", "PEREZ","1","12345678","");
+        RequestPersons requestPersons = new RequestPersons("12345678","email@email.com", "9999999", 1, 1);
+        PersonsEntity personsEntity = new PersonsEntity(1,"12345678",
+                "JOSE",
+                "PEREZ",
+                "email@email.com",
+                "99999999",
+                1, null, null);
+        ResponseBase responseBaseEsperado = new ResponseBase(Constants.CODE_SUCCESS,Constants.MESS_SUCCESS,Optional.of(personsEntity));
+
+        PersonsServiceImpl spy = Mockito.spy(personsService);
+
+        String numero = "12345678";
+
+
+        Mockito.when(personsValidations.validateInput(Mockito.any(RequestPersons.class))).thenReturn(validatePersons);
+
+        Mockito.doReturn(responseReniec).when(spy).getExecutionReniec(Mockito.anyString());
+        Mockito.when(personsRepository.save(Mockito.any(PersonsEntity.class))).thenReturn(personsEntity);
+
+        ResponseBase responseBaseObtenido = spy.createPersons(requestPersons);
+
+        assertEquals(responseBaseObtenido.getCode(), responseBaseEsperado.getCode());
+        assertEquals(responseBaseObtenido.getMessage(), responseBaseEsperado.getMessage());
+        assertEquals(responseBaseObtenido.getData(), responseBaseEsperado.getData());
     }
 
     @Test

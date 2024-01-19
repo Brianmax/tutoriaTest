@@ -1,10 +1,14 @@
 package com.codigo.msregister.aggregates.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestPersons {
     private String numDocument;
     private String email;
